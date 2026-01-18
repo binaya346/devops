@@ -133,13 +133,13 @@ server {
 
     location / {
         # This is the magic line
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:3000;
 
         # These headers pass the user's real info to the backend app
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $http;
+        proxy_set_header X-Forwarded-Proto $schema;
     }
 }
 ```
@@ -148,3 +148,30 @@ Web server (nginx/apache)
 Application Server (Python, express)
 
 When Nginx acts as a Reverse Proxy, it acts like a "middleman." If we don't use these headers, our backend app (Node.js/Python) will think every single request is coming from Nginx itself (127.0.0.1) rather than the actual user in the outside world.
+
+
+VM
+Port => 80 nginx. 
+
+localhost:80 => hits nginx. 
+
+domainname => map to 127.0.0.1
+
+=> /etc/hosts =>
+127.0.0.1 domainname
+
+HOST
+domainname => VM 
+Assign Private Ip to VM (192.168.30.10)
+
+=> /etc/hosts
+192.168.30.10 domainname
+
+
+
+## Adding dns name in windows
+location `C:\Windows\System32\drivers\etc\hosts`
+192.168.33.10  devopsclass.com
+
+
+sudo ln -s /etc/nginx/sites-available/express.com /etc/nginx/sites-enabled/

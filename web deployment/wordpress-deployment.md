@@ -1,5 +1,9 @@
 # Installation
 
+CMS => Content management system. 
+Wordpress => Creates/Stores configuration & all in database.
+
+
 ## Phase 1: Preparing the "Vault" (MySQL)
 WordPress needs a dedicated database to store its posts, users, and settings.
 
@@ -12,6 +16,12 @@ GRANT ALL PRIVILEGES ON wordpress_db.* TO 'wp_admin'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
+
+Check if the user is created:
+`select user from mysql.user;`
+
+Check the permission of user:
+`show grants for wp_admin@"localhost";`
 
 ## Phase 2: Downloading the Application
 Instead of writing our own PHP code, we are downloading a professional application.
@@ -76,4 +86,3 @@ sudo nginx -t && sudo systemctl reload nginx
 ## Important:
 Why do we use `try_files $uri $uri/ /index.php?$args;`?
 In WordPress, when you visit myblog.test/about-us, there isn't actually a folder called "about-us" on the hard drive. This Nginx line tells the server: "If you can't find a physical file, don't give a 404 error. Instead, give the request to index.php, and let PHP figure out what page to show from the database."
-

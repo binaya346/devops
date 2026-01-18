@@ -34,12 +34,19 @@ CREATE DATABASE devops_db;
 CREATE USER 'devops_user'@'localhost' IDENTIFIED BY 'StrongPass123!';
 
 -- Give the user permission to only this database
-GRANT ALL PRIVILEGES ON devops_db.* TO 'devops_user'@'localhost';
+GRANT ALL PRIVILEGES ON devops_db.table TO 'devops_user'@'localhost';
+
+-- Check if user is created
+SELECT User FROM mysql.user;
+
+-- Check all the permission of user.
+SHOW GRANTS FOR 'devops_db'@'localhost';
 
 -- Apply and Exit
 FLUSH PRIVILEGES;
 EXIT;
 ```
+
 
 ## The Host: 'localhost' vs '%'
 In MySQL, a user's identity isn't just their name; it's Name + Where they are coming from. This is the "Host" part of the user definition.
