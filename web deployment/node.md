@@ -38,17 +38,17 @@ It will store the actuall code of all the dependency & dependencies of dependenc
 Paste the below code there:
 ```bash
 
-const express = require("express")
+    const express = require("express")
 
-const app = express()
+    const app = express()
 
-app.get('/', (req, res) => {
-  res.send('Hello World!! Our first node js program')
-})
+    app.get('/', (req, res) => {
+    res.send('Hello World!! Our first node js program')
+    })
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
-})
+    app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000')
+    })
 
 ```
 
@@ -78,7 +78,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $schema;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 

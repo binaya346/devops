@@ -46,8 +46,6 @@ A Dockerfile is an automation script that builds a Docker Image. We will use two
 A. Node.js 24 (LTS) Implementation
 We use node:24-alpine. Alpine Linux is a security-oriented, lightweight Linux distribution (~5MB) which reduces the attack surface of our "Invisible" backend.
 
-Dockerfile
-
 ```bash
 
 # STEP 1: Use the latest stable LTS version on a tiny footprint (Alpine)
@@ -89,6 +87,7 @@ Dockerfile
 ```bash
 # STAGE 1: The Build Environment (Heavy)
 FROM maven:3.9-eclipse-temurin-21-alpine AS build_stage
+# It has heavy tools like JDK. 
 WORKDIR /app
 # Copy the project descriptor and source
 COPY pom.xml .
@@ -155,7 +154,23 @@ docker run -d \
 
 ```
 
-Testing connection between two containers in same network:
+# Diff between entrypoint & cmd command:
+In Docker, both ENTRYPOINT and CMD define what happens when a container starts, but they serve different purposes in terms of "Strictness" and "Flexibility."
+
+## The Core Concept
+ENTRYPOINT: Think of this as the Command. It is the "hardcoded" purpose of the container. It is not easily ignored.
+
+CMD: Think of this as the Default Parameter. It provides a default instruction that the user can easily override when starting the container.
+
+Over ridding cmd command. 
+`docker run devops-java-service java --version`
+
+What happened here?
+- Docker ignored `["java", "-jar", "app.jar"]`.
+- Docker executed `java --version` instead.
+- The container printed the version and stopped.
+
+# Testing connection between two containers in same network:
 
 # Log into the Node container
 `docker exec -it node-app sh`
@@ -229,3 +244,48 @@ Principle of Least Privilege: Always use USER <non-root-user>.
 **Secrets:** Never use ENV for passwords in a Dockerfile. Use docker-compose environment files or a Secret Manager (Harbor/Vault).
 
 **Dynamic Environments:** Pass .env files at runtime so one image works for Dev, QA, and Prod.
+
+# Pull image
+docker pull mysql
+docker pull nginx
+
+# See all docker images
+docker images
+
+# Running a container using mysql image.
+docker run -d -p 8080:80 --name web-prod mysql
+
+# Running a container using mysql image with environment variable. 
+docker run -p 3307:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_RANDOM_ROOT_PASSWORD=1 --name mysql-server mysql:latest
+
+# Running a container using nginx image with environment variable. 
+docker
+  run
+  -d
+  -p 8000:80
+  --name nginx-server
+  nginx
+
+# Docker container list
+`docker ps` => Lists all running container
+`docker ps -a` => Lists all the containers (running + stopped)
+
+# Running container stop:
+`docker stop <container_name> | <container_id>`
+
+`docker rm <container_name> | <container_id>`
+
+Container => running | stopped
+
+# Start a stopped container:
+`docker start <container_name> | <container_id>`
+
+# Check the logs of the application running inside the container
+`docker logs <container_name> | <container_id>`
+
+use `-f` flag to check the live logs
+
+`docker logs -f <container_name> | <container_id>`
+
+# Enter inside a docker container using following command
+`docker exec -it <container_name> | <container_id> sh`
