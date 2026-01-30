@@ -182,17 +182,21 @@ What happened here?
 5. Persistent Storage: Volumes & Bind Mounts
 By default, data in a container is ephemeral (lost if the container is deleted).
 
-**Bind Mounts:** You map a path on your Host VM to a path in the container.
+**Bind Mounts:** You map a path on your Host to a path in the container.
 
-**Command:** `docker run -v /home/vagrant/logs:/usr/src/app/logs node-app`
+**Command:** `docker run -v /var/log:/usr/src/app/logs node-app`
+(container) /usr/src/app/logs => info.log
+(host) /var/log => info.log
 
-**Visualization:** The container thinks it's writing to its own disk, but the data is physically streaming to your VM's hard drive.
+**Visualization:** The container thinks it's writing to its own disk, but the data is physically streaming to your Host's hard drive.
 
 **Named Volumes:** Managed by Docker. Best for databases.
 
+volume => Storage space in our computer/host. 
+
 **Command:** `docker run -v mysql_data:/var/lib/mysql mysql:8.0`
 
-6. Docker Compose: Provisioning the Stack
+1. Docker Compose: Provisioning the Stack
 Docker Compose is an orchestrator that uses a YAML file to manage multiple services.
 
 docker-compose.yml

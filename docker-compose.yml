@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  backend-api:
+    build: ./java-applicaation/devops-java/
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=db-service # DNS Resolution handles the IP automatically
+      - DATABASE_USER = ${DB_USER}
+      - DATABASE_PASSWORD = ${DB_PASSWORD}
+      - DATABASE_NAME = ${DB_NAME}
+    networks:
+      - private-net
+    # Technical Logic: Ensures db-service starts before backend-api
+    depends_on:
+      - db-service
+
+  frontend-service:
+    build: ./my-react-app/
+    ports:
+      - "3000:80"
+    networks:
+      - private-net
+
+  db-service:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - private-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-saney}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  private-net: # This network is invisible to the public internet
+    driver: bridge
+
+volumes:
+  postgres_data:
