@@ -1,45 +1,51 @@
 version: '3.8'
+
 services:
-  backend-api:
-    build: ./java-applicaation/devops-java/
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=db-service # DNS Resolution handles the IP automatically
-      - DATABASE_USER = ${DB_USER}
-      - DATABASE_PASSWORD = ${DB_PASSWORD}
-      - DATABASE_NAME = ${DB_NAME}
-    networks:
-      - private-net
-    # Technical Logic: Ensures db-service starts before backend-api
-    depends_on:
-      - db-service
-
-  frontend-service:
-    build: ./my-react-app/
-    ports:
-      - "3000:80"
-    networks:
-      - private-net
-
   db-service:
     image: postgres:16-alpine
+    container_name: postgres_db
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-studentdb}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - private-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-saney}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-studentdb}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  backend-api:
+    build: ./java-application/devops-java/
+    container_name: spring_backend
+    ports:
+      - "8080:8080"
+    environment:
+      # These match the ${VAR} names in your application.properties
+      - DB_HOST=db-service
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-studentdb}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+    networks:
+      - private-net
+    depends_on:
+      db-service:
+        condition: service_healthy # Wait for the DB to be fully ready
+
+  frontend-service:
+    build: ./my-react-app/
+    container_name: react_frontend
+    ports:
+      - "9090:80" 
+    networks:
+      - private-net
+
 networks:
-  private-net: # This network is invisible to the public internet
+  private-net:
     driver: bridge
 
 volumes:

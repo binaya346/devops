@@ -293,3 +293,12 @@ use `-f` flag to check the live logs
 
 # Enter inside a docker container using following command
 `docker exec -it <container_name> | <container_id> sh`
+
+# Connect with postgres
+`psql -U <username> -d <database>`
+
+show all tables
+`\dt;`
+
+describe table
+`\d <table_name>;`
