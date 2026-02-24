@@ -133,7 +133,7 @@ server {
 
     location / {
         # This is the magic line
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:8080;
 
         # These headers pass the user's real info to the backend app
         proxy_set_header Host $host;

@@ -13,6 +13,8 @@ WORKDIR /usr/share/nginx/html
 # copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+USER Node
+
 # copy static files from build stage
 COPY --from=build_stage /app/dist .
 

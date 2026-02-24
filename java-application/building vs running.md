@@ -22,7 +22,7 @@ When you use a command like `./mvnw spring-boot:run`, you are running the applic
 
 Best For: Fast coding, testing new features, and debugging.
 
-3. Building for Production (The "Package" Step)
+1. Building for Production (The "Package" Step)
 In DevOps, we don't ship source code; we ship a Build Artifact => `.jar` runs on JRE. 
 
 The Command: `./mvnw package`.
